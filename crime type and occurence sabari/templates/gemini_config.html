@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gemini API Configuration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .config-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .config-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .config-card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group small {
+            display: block;
+            color: #999;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .current-config {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .current-config h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .config-item:last-child {
+            border-bottom: none;
+        }
+
+        .config-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .config-value {
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-box ul {
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        .info-box li {
+            color: #856404;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="config-container">
+        <div class="header">
+            <h1>🤖 Google Gemini API Configuration</h1>
+            <p>Configure Gemini 2.5 Flash for AI-powered video analysis reports</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if msg %}
+            <div class="alert alert-success">
+                {{ msg }}
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="alert alert-error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Current Configuration -->
+        {% if current_config %}
+        <div class="config-card">
+            <div class="current-config">
+                <h3>📋 Current Configuration</h3>
+                <div class="config-item">
+                    <span class="config-label">Model:</span>
+                    <span class="config-value">{{ current_config.model_name }}</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">API Key:</span>
+                    <span class="config-value">{{ current_config.api_key|slice:":20" }}...</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Status:</span>
+                    <span class="status-badge {% if current_config.is_active %}status-active{% else %}status-inactive{% endif %}">
+                        {% if current_config.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Last Updated:</span>
+                    <span class="config-value">{{ current_config.updated_at|date:"M d, Y H:i" }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Configuration Form -->
+        <div class="config-card">
+            <h2>⚙️ {% if current_config %}Update{% else %}Add{% endif %} API Configuration</h2>
+
+            <div class="info-box">
+                <h4>📌 How to get Gemini API Key:</h4>
+                <ul>
+                    <li>Go to <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a></li>
+                    <li>Sign in with your Google account</li>
+                    <li>Click "Get API Key" or "Create API Key"</li>
+                    <li>Copy the generated API key</li>
+                    <li>Paste it below</li>
+                </ul>
+            </div>
+
+            <form method="POST" action="{% url 'gemini_config' %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="api_key">🔑 Gemini API Key *</label>
+                    <input
+                        type="text"
+                        id="api_key"
+                        name="api_key"
+                        placeholder="Enter your Gemini API key"
+                        value="{{ current_config.api_key|default:'' }}"
+                        required
+                    >
+                    <small>Your API key will be encrypted and stored securely</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="model_name">🤖 Model Name</label>
+                    <select id="model_name" name="model_name">
+                        <option value="gemini-2.5-flash" selected>
+                            Gemini 2.5 Flash
+                        </option>
+                    </select>
+                    <small>Gemini 2.5 Flash - Latest and most powerful model</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="is_active">✅ Status</label>
+                    <select id="is_active" name="is_active">
+                        <option value="true" {% if current_config.is_active %}selected{% endif %}>Active</option>
+                        <option value="false" {% if not current_config.is_active %}selected{% endif %}>Inactive</option>
+                    </select>
+                    <small>Set to Active to enable AI report generation</small>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        💾 {% if current_config %}Update{% else %}Save{% endif %} Configuration
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="testAPI()">
+                        🧪 Test API Key
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'admin_home' %}'">
+                        🏠 Back to Admin
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Information Card -->
+        <div class="config-card">
+            <h2>ℹ️ About Gemini Integration</h2>
+            <p style="color: #666; line-height: 1.8; margin-bottom: 15px;">
+                Google Gemini 2.5 Flash is integrated to automatically generate comprehensive
+                video analysis reports. When users upload videos for detection, the system will:
+            </p>
+            <ul style="color: #666; line-height: 1.8; margin-left: 20px;">
+                <li>Analyze all detected objects and their frequencies</li>
+                <li>Generate timeline-based detection summaries</li>
+                <li>Assess risk levels and provide recommendations</li>
+                <li>Create professional reports suitable for law enforcement</li>
+                <li>Provide frame-by-frame analysis with timestamps</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function testAPI() {
+            const apiKey = document.getElementById('api_key').value;
+
+            if (!apiKey) {
+                alert('Please enter an API key first');
+                return;
+            }
+
+            alert('Testing API key...\n\nThis will verify if the key is valid and can connect to Gemini API.');
+
+            // In production, make an AJAX call to test the API
+            fetch('/test-gemini-api/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ api_key: apiKey })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ API Key is valid!\n\nConnection successful.');
+                } else {
+                    alert('❌ API Key test failed:\n\n' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('❌ Error testing API:\n\n' + error);
+            });
+        }
+    </script>
+</body>
+</html>
+
+{% endblock %}

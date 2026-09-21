@@ -1,0 +1,26 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}User Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-brand">Crime Detection Dashboard</div>
+        <a href="/" class="btn btn-primary">Home</a>
+        <a href="{% url 'register' %}" class="btn btn-secondary">📝 Register User</a>
+        <a href="{% url 'user_login' %}" class="btn btn-secondary">👤 User Login</a>
+        <a href="{% url 'admin_login' %}" class="btn btn-secondary">🔐 Admin Login</a>
+    </nav>
+
+    <hr>
+
+    <!-- Block for page content -->
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

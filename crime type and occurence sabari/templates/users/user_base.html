@@ -1,0 +1,28 @@
+<!-- templates/user_base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>{% block title %}User Panel{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+
+
+
+    <nav><h2>Welcome, {{ user.username }}!</h2><h2>Crime Scene Analysis</h2>
+        <p><a href="{% url 'user_homepage' %}">🏠 Home</a></p>
+{% comment %}         <p><a href="{% url 'upload_evidence' %}">📊 upload_evidence</a></p> 
+        <p><a href="{% url 'verify_evidence' %}">🔍 verify_evidence</a></p> {% endcomment %}
+        <p><a href="{% url 'user_logout' %}">🚪 Logout</a></p>
+    </nav>
+
+    <hr>
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
+
+

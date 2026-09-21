@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+    <section class="hero-banner">
+        <h1>Welcome to Crime Detection Dashboard</h1>
+        <p>Our system uses image/video analysis to detect illegal items, track incidents, and provide evidence-based reporting for safer communities.</p>
+        <ul class="hero-features">
+            <li>🔎 Object detection for weapons and suspicious items</li>
+            <li>🎥 Video upload, live streaming & enhanced result visualization</li>
+            <li>🧾 Evidence management with admin verification and reporting</li>
+            <li>👤 User login, admin control panel, and secure access workflows</li>
+        </ul>
+    </section>
+
+    <section class="project-overview">
+        <h2>About this Project</h2>
+        <p>This application is designed for public safety and security teams. It integrates computer vision with a user-driven evidence pipeline, providing high-confidence alerts for potential crime events.</p>
+        <ul>
+            <li>Secure authentication: user and admin roles with login/register workflows.</li>
+            <li>Detection models: YOLO-based object detection trained for weapons and threat indicators.</li>
+            <li>Report dashboard: review detections, evidence validation, and incident logs.</li>
+            <li>Modular extension-ready architecture for future enhancements.</li>
+        </ul>
+    </section>
+{% endblock %}

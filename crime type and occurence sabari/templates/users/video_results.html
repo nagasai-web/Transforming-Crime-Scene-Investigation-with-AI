@@ -1,0 +1,335 @@
+{% extends 'users/user_base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Detection Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .results-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        .video-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .video-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .video-card {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .video-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .video-card video {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .stat-box p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .detections-summary {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .detection-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .detection-label {
+            width: 150px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .detection-progress {
+            flex: 1;
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .detection-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s ease;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        <div class="header">
+            <h1>🎥 Video Detection Results</h1>
+        </div>
+
+        {% if success %}
+        <div class="video-section">
+            <h2>📹 Processed Video</h2>
+
+            <div class="video-grid">
+                <div class="video-card">
+                    <h3>Original Video</h3>
+                    <video controls>
+                        <source src="{{ original_video }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="video-card">
+                    <h3>Detected Video</h3>
+                    <video controls>
+                        <source src="{{ detected_video }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <h2 style="margin-top: 30px;">📊 Video Analysis</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h3>{{ video_results.frames_processed }}</h3>
+                    <p>Frames Processed</p>
+                </div>
+                <div class="stat-box">
+                    <h3>{{ video_results.detections|length }}</h3>
+                    <p>Object Types</p>
+                </div>
+                <div class="stat-box">
+                    <h3>{{ video_results.detections.person|default:0 }}</h3>
+                    <p>Persons Detected</p>
+                </div>
+                <div class="stat-box">
+                    <h3>30</h3>
+                    <p>FPS</p>
+                </div>
+            </div>
+
+            <!-- Detection Summary -->
+            <h3 style="margin-top: 20px; margin-bottom: 15px; color: #333;">Detection Summary:</h3>
+            <div class="detections-summary">
+                {% for class_name, count in video_results.detections.items %}
+                <div class="detection-bar">
+                    <div class="detection-label">{{ class_name|title }}</div>
+                    <div class="detection-progress">
+                        <div class="detection-fill" style="width: {% widthratio count 100 100 %}%">
+                            {{ count }}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="text-align: center; color: #999;">No detections found</p>
+                {% endfor %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="window.location.href='{% url 'user_homepage' %}'">
+                    🏠 Back to Dashboard
+                </button>
+                <button class="btn btn-secondary" onclick="downloadVideo()">
+                    💾 Download Video
+                </button>
+                <button class="btn btn-secondary" onclick="window.print()">
+                    🖨️ Print Report
+                </button>
+            </div>
+        </div>
+
+        <!-- Gemini AI Report Section -->
+        {% if gemini_report %}
+        <div class="video-section">
+            <h2>🤖 AI-Generated Analysis Report (Gemini 2.5 Flash)</h2>
+            <div style="background: #f8f9ff; padding: 30px; border-radius: 10px; line-height: 1.8; white-space: pre-wrap; color: #333;">{{ gemini_report }}</div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="downloadAIReport()">
+                    📄 Download AI Report
+                </button>
+            </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="video-section">
+            <h2 style="color: #ff4444;">❌ Video Processing Failed</h2>
+            <p>{{ error }}</p>
+            <button class="btn btn-primary" onclick="window.location.href='{% url 'user_homepage' %}'">
+                🏠 Back to Dashboard
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function downloadVideo() {
+            const link = document.createElement('a');
+            link.href = "{{ detected_video }}";
+            link.download = 'detected_video.mp4';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function downloadAIReport() {
+            const reportContent = `VIDEO ANALYSIS REPORT
+================================================================================
+
+Video Name: {{ video_results.output_video|default:"video.mp4" }}
+Analysis Date: {% now "M d, Y H:i" %}
+
+================================================================================
+
+DETECTION SUMMARY:
+Frames Processed: {{ video_results.frames_processed }}
+Objects Detected: {{ video_results.detections|length }}
+
+Detection Breakdown:
+{% for class_name, count in video_results.detections.items %}- {{ class_name|title }}: {{ count }}
+{% endfor %}
+================================================================================
+
+AI-GENERATED ANALYSIS (Gemini 2.5 Flash):
+
+{{ gemini_report|safe }}
+
+================================================================================
+
+Generated by AI Crime Detection System
+`;
+
+            const blob = new Blob([reportContent], { type: 'text/plain; charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'ai_analysis_report_{% now "Y-m-d_H-i-s" %}.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
+
+{% endblock %}

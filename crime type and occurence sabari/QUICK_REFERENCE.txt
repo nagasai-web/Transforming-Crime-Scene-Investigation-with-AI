@@ -1,0 +1,263 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   AI CRIME DETECTION SYSTEM - QUICK REFERENCE              ║
+║                        With Gemini 2.5 Flash Integration                   ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🚀 QUICK START                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  1. Install Dependencies:
+     pip install -r requirements.txt
+
+  2. Run Migrations:
+     python manage.py migrate
+
+  3. Start Server:
+     python manage.py runserver
+
+  4. Access Application:
+     http://127.0.0.1:8000/
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🔑 DEFAULT CREDENTIALS                                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Admin Login: http://127.0.0.1:8000/admin-login/
+  Username: admin
+  Password: admin
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🤖 GEMINI SETUP (NEW!)                                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  1. Get API Key:
+     → https://aistudio.google.com/apikey
+
+  2. Configure:
+     → Login as admin
+     → Click "Gemini AI Configuration"
+     → Paste API key
+     → Select "Gemini 2.0 Flash"
+     → Set status to "Active"
+     → Click "Save Configuration"
+
+  3. Test:
+     → Click "Test API Key" button
+     → Should show "✅ API Key is valid!"
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📊 FEATURES                                                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ✅ Image Detection       - Upload images for object detection
+  ✅ Video Detection       - Process videos frame-by-frame
+  ✅ Live Detection        - Real-time webcam monitoring
+  ✅ AI Reports (NEW!)     - Automatic Gemini-powered analysis
+  ✅ User Management       - Admin approval system
+  ✅ Reports Dashboard     - View all generated reports
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🌐 IMPORTANT URLS                                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Home Page:              http://127.0.0.1:8000/
+  User Login:             http://127.0.0.1:8000/user-login/
+  Admin Login:            http://127.0.0.1:8000/admin-login/
+  Gemini Config:          http://127.0.0.1:8000/gemini-config/
+  View Reports:           http://127.0.0.1:8000/view-reports/
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📁 KEY FILES                                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Documentation:
+  ├── README.md                    - Complete documentation
+  ├── QUICKSTART.md                - Quick start guide
+  ├── USAGE_GUIDE.md               - Detailed usage instructions
+  ├── GEMINI_INTEGRATION.md        - Gemini setup guide
+  └── GEMINI_COMPLETE.md           - Gemini feature summary
+
+  Setup Scripts:
+  ├── start.bat                    - Auto start (Windows)
+  ├── setup_gemini.bat             - Gemini setup (Windows)
+  └── test_installation.py         - Verify installation
+
+  Core Code:
+  ├── users/views.py               - All views and detection logic
+  ├── users/models.py              - Database models
+  ├── users/utils/
+  │   ├── yolo_detector.py         - Object detection
+  │   ├── segmentation.py          - Blood/glass detection
+  │   ├── tracker.py               - Person tracking
+  │   └── gemini_report.py         - AI report generation (NEW!)
+  └── templates/
+      ├── users/user_homepage.html - User dashboard
+      ├── gemini_config.html       - Gemini config page (NEW!)
+      └── view_reports.html        - Reports page (NEW!)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🎯 DETECTION CLASSES                                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Objects:              Segmentation:
+  • Person              • Blood Stains
+  • Knife               • Broken Glass
+  • Gun/Rifle
+  • Bat
+  • Rope
+  • Bullet Shell
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🚨 RISK LEVELS                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  🔴 HIGH RISK      - Person + Weapon + Blood
+  🟠 MEDIUM RISK    - Weapon only OR 3+ persons
+  🟢 NORMAL         - No threats detected
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 💡 USAGE WORKFLOW                                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  For Users:
+  1. Register account
+  2. Wait for admin approval
+  3. Login
+  4. Upload image/video
+  5. View detection results
+  6. Read AI-generated report (NEW!)
+  7. Download report
+
+  For Admins:
+  1. Login as admin
+  2. Activate users
+  3. Configure Gemini API (NEW!)
+  4. View all reports (NEW!)
+  5. Download reports
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🛠️ COMMON COMMANDS                                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  # Install dependencies
+  pip install -r requirements.txt
+
+  # Setup Gemini (NEW!)
+  pip install google-generativeai==0.3.2
+
+  # Run migrations
+  python manage.py makemigrations
+  python manage.py migrate
+
+  # Test installation
+  python test_installation.py
+
+  # Start server
+  python manage.py runserver
+
+  # Create superuser (optional)
+  python manage.py createsuperuser
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🐛 TROUBLESHOOTING                                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Camera not working?
+  → Allow camera permissions in browser
+  → Use Chrome or Edge
+
+  Slow detection?
+  → Use smaller images (640x640)
+  → Use yolov8n model
+
+  Import errors?
+  → pip install -r requirements.txt --upgrade
+
+  Gemini not working? (NEW!)
+  → Check API key is valid
+  → Verify config is Active
+  → Check internet connection
+
+  Database errors?
+  → python manage.py migrate --run-syncdb
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📦 DEPENDENCIES                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Django==5.0.0
+  ultralytics==8.1.0              # YOLOv8
+  opencv-python==4.9.0.80         # Computer Vision
+  torch==2.1.2                    # Deep Learning
+  google-generativeai==0.3.2      # Gemini AI (NEW!)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 💰 GEMINI PRICING (NEW!)                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Free Tier:
+  • 15 requests/minute
+  • 1M tokens/day
+  • Perfect for testing
+
+  Paid Tier:
+  • ~$0.0004 per report
+  • 100 videos/month = $0.04
+  • 1000 videos/month = $0.40
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📚 DOCUMENTATION                                                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  New User?           → Read QUICKSTART.md
+  Need Details?       → Read USAGE_GUIDE.md
+  Technical Info?     → Read README.md
+  Gemini Setup?       → Read GEMINI_INTEGRATION.md (NEW!)
+  Gemini Features?    → Read GEMINI_COMPLETE.md (NEW!)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ✅ WHAT'S NEW - GEMINI INTEGRATION                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ✨ Automatic AI report generation
+  ✨ Timeline-based detection analysis
+  ✨ Risk assessment and recommendations
+  ✨ Professional format for law enforcement
+  ✨ Admin configuration page
+  ✨ Reports management dashboard
+  ✨ Download reports as text files
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🎉 SYSTEM STATUS                                                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Core System:        ✅ COMPLETE
+  YOLO Detection:     ✅ WORKING
+  Segmentation:       ✅ WORKING
+  Person Tracking:    ✅ WORKING
+  User Management:    ✅ WORKING
+  Gemini AI:          ✅ INTEGRATED (NEW!)
+  Reports System:     ✅ WORKING (NEW!)
+
+  Status: 🟢 FULLY OPERATIONAL
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📞 SUPPORT                                                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Google AI Studio:   https://aistudio.google.com/
+  Get API Key:        https://aistudio.google.com/apikey
+  Gemini Docs:        https://ai.google.dev/docs
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                         READY TO DETECT CRIMES! 🔍                         ║
+║                                                                            ║
+║  Run: python manage.py runserver                                          ║
+║  Open: http://127.0.0.1:8000/                                             ║
+║                                                                            ║
+║  With AI-Powered Analysis by Google Gemini 2.5 Flash! 🤖                  ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Last Updated: March 25, 2026
+Version: 1.1.0 (with Gemini Integration)

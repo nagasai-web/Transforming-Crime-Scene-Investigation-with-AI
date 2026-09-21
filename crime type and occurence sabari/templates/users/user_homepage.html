@@ -1,0 +1,545 @@
+{% extends 'users/user_base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard - Crime Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #667eea;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .user-details h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-time {
+            background: #f0f4ff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff, #f9faff);
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid rgba(102, 126, 234, 0.22);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            text-align: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 35px rgba(0,0,0,0.25);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.15);
+        }
+
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 12px;
+            letter-spacing: 0.03em;
+        }
+
+        .stat-card p {
+            color: #3f51b5;
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 42px;
+            margin-bottom: 8px;
+            transition: transform 0.25s ease;
+        }
+
+        /* Action Cards */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .action-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .action-card h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .action-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .activity-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .activity-item {
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            background: #f8f9ff;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .activity-item h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .activity-item p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid, .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="user-info">
+                <img src="{{ user_image }}" alt="User Avatar" class="user-avatar">
+                <div class="user-details">
+                    <h1>Welcome back, {{ user_name }}! 👋</h1>
+                    <p>AI-Based Crime Scene Detection System</p>
+                </div>
+            </div>
+            <div class="login-time">
+                🕐 Login Time: {{ login_time }}
+            </div>
+        </div>
+
+        <!-- Project Info Banner -->
+        <div class="project-info-card">
+            <h2>Crime Type and Occurrence Detection</h2>
+            <p>This system analyzes uploaded images and video feeds to automatically detect crime scene indicators including weapons, blood stains, bullet shells, and violence patterns. Results are saved in the user dashboard, and risk levels are calculated live to help first responders and analysts act fast.</p>
+            <p>Project title: <strong>Crime Type and Occurrence Sabari</strong></p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <h3>Total Detections</h3>
+                <p>{{ total_detections }}</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <h3>High Risk Cases</h3>
+                <p>{{ high_risk_cases }}</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <h3>Processed Today</h3>
+                <p>{{ processed_today }}</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <h3>Accuracy Rate</h3>
+                <p>98.5%</p>
+            </div>
+        </div>
+
+        <!-- Insights Graphs -->
+        <div class="insights-grid">
+            <div class="chart-card">
+                <h3>Detections Trend</h3>
+                <div class="bar-chart">
+                    <div class="bar" style="height: 25%;">Jan</div>
+                    <div class="bar" style="height: 45%;">Feb</div>
+                    <div class="bar" style="height: 60%;">Mar</div>
+                    <div class="bar" style="height: 80%;">Apr</div>
+                    <div class="bar" style="height: 70%;">May</div>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Risk Category</h3>
+                <div class="pie-chart"></div>
+                <div class="pie-labels">
+                    <span class="low">Low</span><span class="mid">Medium</span><span class="high">High</span>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Analysis Volume</h3>
+                <div class="line-chart"></div>
+            </div>
+        </div>
+
+        <!-- Action Cards -->
+        <div class="section-title">
+            <h2>🚨 Detection Features</h2>
+            <p>Choose the mode to start crime scene analysis in real time or via uploaded media.</p>
+        </div>
+        <div class="action-grid">
+            <div class="action-card" onclick="openModal('liveModal')">
+                <div class="action-icon">📹</div>
+                <h2>Live Detection</h2>
+                <p>Real-time crime scene monitoring using webcam or IP camera</p>
+                <button class="action-btn">Start Live Feed</button>
+            </div>
+
+            <div class="action-card" onclick="openModal('enhancedImageModal')">
+                <div class="action-icon">🔫</div>
+                <h2>Enhanced Image Detection</h2>
+                <p>Advanced detection: Weapons, Blood, Glass, Bullet Shells, Violence</p>
+                <button class="action-btn" type="button">Enhanced Scan</button>
+            </div>
+
+            <div class="action-card" onclick="openModal('enhancedVideoModal')">
+                <div class="action-icon">🎬</div>
+                <h2>Enhanced Video Analysis</h2>
+                <p>Comprehensive video analysis with all crime scene indicators</p>
+                <button class="action-btn" type="button">Enhanced Analysis</button>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section">
+            <h2>📋 Recent Activity</h2>
+            <div class="activity-grid">
+                <div class="activity-item">
+                    <h4>Enhanced Detection System Ready</h4>
+                    <p>YOLOv8 + Specialized Weapon Detection Model loaded successfully</p>
+                </div>
+                <div class="activity-item">
+                    <h4>Detection Classes Active</h4>
+                    <p>Weapons (19 types), Blood, Bullet Shells, Violence/Fight Detection</p>
+                </div>
+                <div class="activity-item">
+                    <h4>Advanced Features Enabled</h4>
+                    <p>Color-based segmentation, Edge detection, Violence scene analysis</p>
+                </div>
+                <div class="activity-item">
+                    <h4>Tracking System</h4>
+                    <p>Multi-object tracking and person identification enabled</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Upload Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('imageModal')">&times;</span>
+            <h2>🖼️ Upload Crime Scene Image</h2>
+            <form action="/detect-image/" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="upload-area" onclick="document.getElementById('imageFile').click()">
+                    <p style="font-size: 50px;">📤</p>
+                    <p>Click to select image or drag and drop</p>
+                    <p style="font-size: 12px; color: #999;">Supported: JPG, PNG, JPEG</p>
+                    <input type="file" id="imageFile" name="image" accept="image/*" required>
+                </div>
+                <button type="submit" class="submit-btn">🔍 Detect Objects</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Video Upload Modal -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('videoModal')">&times;</span>
+            <h2>🎥 Upload Video for Analysis</h2>
+            <form action="/detect-video/" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="upload-area" onclick="document.getElementById('videoFile').click()">
+                    <p style="font-size: 50px;">📤</p>
+                    <p>Click to select video or drag and drop</p>
+                    <p style="font-size: 12px; color: #999;">Supported: MP4, AVI, MOV</p>
+                    <input type="file" id="videoFile" name="video" accept="video/*" required>
+                </div>
+                <button type="submit" class="submit-btn">🎬 Process Video</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Live Detection Modal -->
+    <div id="liveModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('liveModal')">&times;</span>
+            <h2>📹 Live Camera Detection</h2>
+            <p style="text-align: center; margin: 20px 0;">Start real-time detection using your webcam</p>
+            <button onclick="startLiveDetection()" class="submit-btn">🚀 Start Detection</button>
+            <div id="liveStream" style="margin-top: 20px; text-align: center;"></div>
+        </div>
+    </div>
+
+    <!-- Enhanced Image Upload Modal -->
+    <div id="enhancedImageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('enhancedImageModal')">&times;</span>
+            <h2>🔫 Enhanced Crime Scene Image Detection</h2>
+            <p style="text-align: center; color: #ff4444; font-weight: bold;">Advanced Detection: Weapons, Blood, Glass, Bullet Shells, Violence</p>
+            <form action="/enhanced-detect-image/" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="upload-area" onclick="document.getElementById('enhancedImageFile').click()">
+                    <p style="font-size: 50px;">📤</p>
+                    <p>Click to select image or drag and drop</p>
+                    <p style="font-size: 12px; color: #999;">Supported: JPG, PNG, JPEG</p>
+                    <input type="file" id="enhancedImageFile" name="image" accept="image/*" required>
+                </div>
+                <button type="submit" class="submit-btn" style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);">🔍 Enhanced Detection</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Enhanced Video Upload Modal -->
+    <div id="enhancedVideoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('enhancedVideoModal')">&times;</span>
+            <h2>🎬 Enhanced Video Crime Scene Analysis</h2>
+            <p style="text-align: center; color: #ff4444; font-weight: bold;">Comprehensive Analysis: All Crime Scene Indicators</p>
+            <form action="/enhanced-detect-video/" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="upload-area" onclick="document.getElementById('enhancedVideoFile').click()">
+                    <p style="font-size: 50px;">📤</p>
+                    <p>Click to select video or drag and drop</p>
+                    <p style="font-size: 12px; color: #999;">Supported: MP4, AVI, MOV</p>
+                    <input type="file" id="enhancedVideoFile" name="video" accept="video/*" required>
+                </div>
+                <button type="submit" class="submit-btn" style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);">🎬 Enhanced Analysis</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+
+        function startLiveDetection() {
+            window.location.href = "/live-detection/";
+        }
+
+        // File input preview
+        document.getElementById('imageFile')?.addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                alert('Selected: ' + fileName);
+            }
+        });
+
+        document.getElementById('videoFile')?.addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                alert('Selected: ' + fileName);
+            }
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "users/user_base.html" %}
+{% load static %}
+
+{% block title %}Upload Evidence - Digital Evidence Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <i class="fas fa-upload fa-2x mb-2"></i>
+                <h2 class="mb-0 fw-bold">Upload Evidence</h2>
+                <p class="mb-0 opacity-75">Securely upload your digital file—SHA-256 hash will be generated automatically</p>
+            </div>
+            <div class="card-body p-5">
+                {% if msg %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>{{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="file" class="form-label fw-semibold">
+                            <i class="fas fa-file me-2 text-primary"></i>Select File
+                        </label>
+                        <input type="file" class="form-control form-control-lg" id="file" name="file" required accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                        <div class="form-text">Supported formats: Images (JPG, PNG), Documents (PDF, DOC, DOCX). Max size: 10MB.</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg fw-semibold">
+                            <i class="fas fa-upload me-2"></i>Upload & Hash
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="mb-0 text-muted">Need to verify an existing file? 
+                        <a href="{% url 'verify_evidence' %}" class="text-primary fw-semibold">Verify Evidence</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    }
+    .form-control:focus {
+        border-color: #0d47a1;
+        box-shadow: 0 0 0 0.25rem rgba(13, 71, 161, 0.25);
+    }
+    .btn-primary {
+        background-color: #0d47a1;
+        border-color: #0d47a1;
+    }
+    .btn-primary:hover {
+        background-color: #1976d2;
+        border-color: #1976d2;
+    }
+    .rounded-4 {
+        border-radius: 1rem;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,472 @@
+{% extends 'users/user_base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enhanced Video Analysis Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .results-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        .video-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .video-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-box h3 {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .stat-box p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .timeline-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .timeline-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .timeline-bar {
+            background: white;
+            height: 60px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .timeline-segment {
+            position: absolute;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-segment:hover {
+            filter: brightness(1.2);
+            z-index: 10;
+        }
+
+        .segment-weapons {
+            background: #ff4444;
+        }
+
+        .segment-blood {
+            background: #cc0000;
+        }
+
+        .segment-violence {
+            background: #ff6600;
+        }
+
+        .segment-normal {
+            background: #00cc66;
+        }
+
+        .gemini-report {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .gemini-report h3 {
+            margin-bottom: 15px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gemini-report p {
+            line-height: 1.8;
+            font-size: 15px;
+            white-space: pre-wrap;
+        }
+
+        .detection-breakdown {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .detection-breakdown h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .breakdown-item {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .breakdown-item h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .breakdown-item p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .alert-banner {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: alertPulse 1.5s infinite;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        .alert-banner h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        <div class="header">
+            <h1>🎬 Enhanced Video Analysis Results</h1>
+        </div>
+
+        {% if success %}
+
+        <!-- Alert Banner for High Risk -->
+        {% if video_results.detections.weapons > 10 or video_results.detections.violence_frames > 5 %}
+        <div class="alert-banner">
+            <h3>🚨 HIGH RISK CONTENT DETECTED</h3>
+            <p>This video contains significant evidence of weapons, violence, or crime scene indicators.</p>
+        </div>
+        {% endif %}
+
+        <!-- Video Player -->
+        <div class="video-section">
+            <h2>📹 Analyzed Video</h2>
+            <div class="video-container">
+                <video controls>
+                    <source src="{{ detected_video }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <!-- Video Stats -->
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h3>{{ video_results.frames_processed }}</h3>
+                    <p>Frames Processed</p>
+                </div>
+                <div class="stat-box">
+                    <h3>{{ video_results.detections.weapons }}</h3>
+                    <p>Weapon Detections</p>
+                </div>
+                <div class="stat-box">
+                    <h3>{{ video_results.detections.persons }}</h3>
+                    <p>Person Detections</p>
+                </div>
+                <div class="stat-box">
+                    <h3>{{ video_results.detections.blood }}</h3>
+                    <p>Blood Stains</p>
+                </div>
+                <div class="stat-box">
+                    <h3>{{ video_results.detections.shells }}</h3>
+                    <p>Bullet Shells</p>
+                </div>
+                <div class="stat-box">
+                    <h3>{{ video_results.detections.violence_frames }}</h3>
+                    <p>Violence Frames</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detection Breakdown -->
+        <div class="video-section">
+            <div class="detection-breakdown">
+                <h3>📊 Detection Breakdown</h3>
+                <div class="breakdown-grid">
+                    <div class="breakdown-item" style="border-left-color: #ff0000;">
+                        <h4>🔫 Weapons</h4>
+                        <p>Total Detections: {{ video_results.detections.weapons }}</p>
+                        <p>Frames with Weapons: {{ video_results.detections.weapons|floatformat:0 }}</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% widthratio video_results.detections.weapons video_results.frames_processed 100 %}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-item" style="border-left-color: #cc0000;">
+                        <h4>🩸 Blood Evidence</h4>
+                        <p>Total Detections: {{ video_results.detections.blood }}</p>
+                        <p>Severity: {% if video_results.detections.blood > 10 %}High{% elif video_results.detections.blood > 5 %}Medium{% else %}Low{% endif %}</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% widthratio video_results.detections.blood video_results.frames_processed 100 %}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-item" style="border-left-color: #ff9900;">
+                        <h4>💥 Bullet Shells</h4>
+                        <p>Total Detections: {{ video_results.detections.shells }}</p>
+                        <p>Indicates: Firearm discharge</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% widthratio video_results.detections.shells video_results.frames_processed 100 %}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-item" style="border-left-color: #ff6600;">
+                        <h4>🥊 Violence/Fight</h4>
+                        <p>Frames Detected: {{ video_results.detections.violence_frames }}</p>
+                        <p>Percentage: {% widthratio video_results.detections.violence_frames video_results.frames_processed 100 %}%</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% widthratio video_results.detections.violence_frames video_results.frames_processed 100 %}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-item" style="border-left-color: #00cc66;">
+                        <h4>👥 Persons</h4>
+                        <p>Total Detections: {{ video_results.detections.persons }}</p>
+                        <p>Average per frame: {{ video_results.detections.persons|floatformat:1 }}</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% widthratio video_results.detections.persons video_results.frames_processed 100 %}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Generated Report -->
+        {% if gemini_report %}
+        <div class="video-section">
+            <div class="gemini-report">
+                <h3>🤖 AI-Generated Analysis Report</h3>
+                <p>{{ gemini_report }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="video-section">
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="window.location.href='{% url 'user_homepage' %}'">
+                    🏠 Back to Dashboard
+                </button>
+                <button class="btn btn-secondary" onclick="downloadVideo()">
+                    💾 Download Video
+                </button>
+                <button class="btn btn-secondary" onclick="downloadReport()">
+                    📄 Download Report
+                </button>
+                <button class="btn btn-secondary" onclick="window.print()">
+                    🖨️ Print Analysis
+                </button>
+                {% if video_results.detections.weapons > 5 or video_results.detections.violence_frames > 3 %}
+                <button class="btn btn-danger" onclick="alert('Emergency notification feature coming soon!')">
+                    🚨 Alert Authorities
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        {% else %}
+        <div class="video-section">
+            <h2 style="color: #ff4444;">❌ Video Analysis Failed</h2>
+            <p>{{ error }}</p>
+            <button class="btn btn-primary" onclick="window.location.href='{% url 'user_homepage' %}'">
+                🏠 Back to Dashboard
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function downloadVideo() {
+            window.location.href = "{{ detected_video }}";
+        }
+
+        function downloadReport() {
+            const report = {
+                video_name: "{{ video_results.output_video }}",
+                frames_processed: {{ video_results.frames_processed }},
+                detections: {{ video_results.detections|safe }},
+                gemini_report: "{{ gemini_report|escapejs }}"
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(report, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "video_analysis_report.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+    </script>
+</body>
+</html>
+
+{% endblock %}
